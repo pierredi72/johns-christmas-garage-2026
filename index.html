@@ -149,6 +149,7 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 <script>
 (function(){
  const stage=document.getElementById('stage');
+ const img=stage.querySelector('img').src;
  const today=new Date();
  const preview=new URLSearchParams(location.search).get('test')==='1';
  const openedKey='johnny-garage-opened-2026';
