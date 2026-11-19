@@ -95,7 +95,7 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 #surpriseView.hide{display:grid;animation:conceal 1.05s ease forwards}
 @keyframes reveal{0%{opacity:0;transform:scale(1.18);filter:blur(18px)}65%{opacity:1;filter:blur(2px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 @keyframes conceal{to{opacity:0;transform:scale(.82);filter:blur(12px)}}
-.surprise-card{width:min(92vw,900px);max-height:88dvh;overflow:auto;text-align:center;padding:clamp(24px,5vw,54px);border:1px solid #c79a5e;border-radius:22px;background:linear-gradient(145deg,#392719ed,#130d09f2);box-shadow:0 0 70px #eab65b33,0 25px 80px #000b;position:relative}
+.surprise-card{width:100%;height:100%;max-height:100dvh;overflow:auto;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:clamp(24px,5vw,54px);border:0;border-radius:0;background:linear-gradient(145deg,#392719ed,#130d09f2);box-shadow:0 0 70px #eab65b33,0 25px 80px #000b;position:relative}
 .surprise-card:before{content:'✧  ✦  ✧';display:block;color:#f5d58f;font-size:clamp(20px,4vw,34px);letter-spacing:.7em;margin-bottom:18px;text-shadow:0 0 18px #ffc75c}
 .surprise-card h2{color:#f6d99e;font:clamp(25px,4.5vw,42px) Georgia,serif;margin:0 0 20px;text-shadow:0 0 18px #d99b4c66}
 .surprise-card p{color:#fff5e5;font:clamp(17px,2.5vw,22px)/1.65 system-ui,sans-serif}
@@ -105,10 +105,12 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 
 /* V5: das echte Kalender-Türchen wird zum Portal – keine separate Kiste */
 .door{z-index:4;transform-style:preserve-3d;perspective:900px;overflow:visible!important;}
-.door.opened{background:radial-gradient(ellipse at center,#170b04 0%,#050302 78%)!important;box-shadow:inset 0 0 18px #000,0 0 22px #f7d48b88!important;}
-.door.opened::before{content:attr(data-number);position:absolute;inset:12% 12% 12% 12%;display:grid;place-items:center;color:#f4dca9;font:bold clamp(12px,2vw,25px) Georgia,serif;text-shadow:0 0 12px #f6c76b;background:radial-gradient(ellipse,#a66b2d66,#130904 72%);border:1px solid #a87542;box-shadow:inset 0 0 18px #000;}
-.door.opened::after{content:'';position:absolute;inset:0;border:2px solid #4b2a17;border-radius:2px;background-image:var(--calendar-image);background-repeat:no-repeat;background-size:var(--stage-w) var(--stage-h);background-position:var(--door-bg-x) var(--door-bg-y);transform-origin:left center;transform:perspective(900px) rotateY(-108deg);box-shadow:7px 4px 12px #000c;transition:transform 1.9s cubic-bezier(.18,.72,.18,1);backface-visibility:visible;}
+.door.opened{background:radial-gradient(ellipse at center,#090503 0%,#020101 78%)!important;box-shadow:inset 0 0 20px #000,0 0 18px #f7d48b66!important;}
+/* Die goldene Nummer bleibt auf dem dunklen Innenraum; die Klappe selbst ist nummernloses Holz. */
+.door.opened::before{content:attr(data-number);position:absolute;z-index:1;inset:12% 12% 12% 12%;display:grid;place-items:center;color:#f4dca9;font:bold clamp(12px,2vw,25px) Georgia,serif;text-shadow:0 0 12px #f6c76b;background:radial-gradient(ellipse,#17100b 0%,#050302 78%);border:1px solid #79552e;box-shadow:inset 0 0 22px #000,0 0 9px #d5a85a44;}
+.door.opened::after{content:'';position:absolute;inset:0;border:2px solid #4b2a17;border-radius:2px;background:repeating-linear-gradient(0deg,#684027 0 7px,#98613a 8px 11px,#744629 12px 16px,#56331f 17px 20px);box-shadow:inset 0 0 0 2px #bd8951,7px 4px 12px #000c;transform-origin:left center;transform:perspective(900px) rotateY(-108deg);transition:transform 1.9s cubic-bezier(.18,.72,.18,1);backface-visibility:hidden;}
 .door.opening::after{transform:perspective(900px) rotateY(-108deg);}
+.stage.immersed{visibility:hidden;pointer-events:none;}
 .stage.portal-zoom{animation:portalZoom 5.9s cubic-bezier(.2,.65,.25,1) forwards;transform-origin:var(--portal-x,50%) var(--portal-y,50%);}
 @keyframes portalZoom{0%{transform:scale(1)}35%{transform:scale(1.18)}75%,100%{transform:scale(2.8);opacity:.15;filter:blur(5px)}}
 #magicScene{z-index:22;background:radial-gradient(ellipse at 50% 55%,#6b4a2d 0%,#302019 38%,#090605 100%);}
@@ -120,6 +122,9 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 @keyframes snowDrift{to{background-position:40px 260px,-30px 340px,20px 190px,-20px 290px}}
 .aurora-layer{position:absolute;inset:-30%;opacity:0;filter:blur(45px);background:conic-gradient(from 30deg at 50% 50%,transparent,#a8e8cf44,#e6c5ff33,transparent,#ffe4a944,transparent);}
 #magicScene.aurora .aurora-layer{opacity:1;animation:auroraFlow 7s ease-in-out infinite alternate;}
+#magicScene.fire{background:radial-gradient(ellipse at 50% 100%,#71351b 0%,#28130f 42%,#090605 100%);}
+#magicScene.fire .magic-particles i{background:radial-gradient(circle,#fff7cf 0%,#ffb34d 38%,#e34a19 78%);box-shadow:0 0 12px 4px #ff9b3d,0 0 28px #e84c1b;animation-name:emberRise;}
+@keyframes emberRise{0%{opacity:0;transform:translate(0,35px) scale(.3)}18%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-230px) scale(.15)}}
 @keyframes auroraFlow{to{transform:rotate(18deg) scale(1.2);opacity:.65}}
 #surpriseView{z-index:30;background:radial-gradient(ellipse at center,#715334 0%,#25160f 58%,#030201 100%);}
 #surpriseView.show{animation:reveal 2.5s cubic-bezier(.2,.8,.2,1) forwards;}
@@ -189,16 +194,16 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
    busy=true;saveOpened(n);refresh();const b=stage.querySelector('[data-door="'+n+'"]');
    const rect=b.getBoundingClientRect();stage.style.setProperty('--portal-x',((rect.left+rect.width/2)/innerWidth*100)+'%');stage.style.setProperty('--portal-y',((rect.top+rect.height/2)/innerHeight*100)+'%');
    stage.classList.remove('portal-zoom');b.classList.add('opening');
-   scene.classList.remove('leaving','snow','aurora');scene.style.display='grid';scene.classList.add('active');scene.setAttribute('aria-hidden','false');
+   scene.classList.remove('leaving','snow','aurora','fire');scene.style.display='grid';scene.classList.add('active');scene.setAttribute('aria-hidden','false');
    /* Türchenabhängig: Schnee, Sternenregen oder Polarlicht */
-   if(n%3===0)scene.classList.add('snow');else if(n%3===1)scene.classList.add('aurora');
+   if(n%4===1){}else if(n%4===2)scene.classList.add('snow');else if(n%4===3)scene.classList.add('aurora');else scene.classList.add('fire');
    creak();startWonder();haptic([20,40,20]);sparks();
    setTimeout(()=>{b.classList.remove('opening');stage.classList.add('portal-zoom');haptic([18,45,18]);},1850);
    setTimeout(()=>{magicChime();stopWonder();},4400);
    setTimeout(()=>{scene.classList.add('leaving');},5650);
-   setTimeout(()=>{scene.classList.remove('active','leaving','snow','aurora');scene.style.display='none';scene.setAttribute('aria-hidden','true');showSurprise(n);surprise.style.display='grid';surprise.classList.remove('hide');void surprise.offsetWidth;surprise.classList.add('show');stage.classList.remove('portal-zoom');busy=false;},6900);
+   setTimeout(()=>{scene.classList.remove('active','leaving','snow','aurora','fire');scene.style.display='none';scene.setAttribute('aria-hidden','true');stage.classList.add('immersed');showSurprise(n);surprise.style.display='grid';surprise.classList.remove('hide');void surprise.offsetWidth;surprise.classList.add('show');busy=false;},6900);
  }
- function back(){if(busy)return;busy=true;surprise.classList.remove('show');surprise.classList.add('hide');returnChime();haptic([18,35,18]);setTimeout(()=>{surprise.style.display='none';surprise.classList.remove('hide');busy=false;},1700)}
+ function back(){if(busy)return;busy=true;surprise.classList.remove('show');surprise.classList.add('hide');returnChime();haptic([18,35,18]);setTimeout(()=>{surprise.style.display='none';surprise.classList.remove('hide');stage.classList.remove('immersed','portal-zoom');busy=false;},1700)}
  doors.forEach(([n,x,y,w,h])=>{const b=document.createElement('button');b.type='button';b.className='door';b.dataset.door=n;b.style.left=x+'%';b.style.top=y+'%';b.style.width=w+'%';b.style.height=h+'%';b.setAttribute('aria-label','Adventstürchen '+n);b.dataset.number=n;b.style.setProperty('--calendar-image','url(\"'+img+'\")');b.innerHTML='<span class="sr">Türchen '+n+'</span>';b.addEventListener('click',()=>openDoor(n));stage.appendChild(b)});
  function positionDoorTextures(){const r=stage.getBoundingClientRect();stage.querySelectorAll('.door').forEach(b=>{const x=parseFloat(b.style.left)/100*r.width,y=parseFloat(b.style.top)/100*r.height;b.style.setProperty('--stage-w',r.width+'px');b.style.setProperty('--stage-h',r.height+'px');b.style.setProperty('--door-bg-x',(-x)+'px');b.style.setProperty('--door-bg-y',(-y)+'px')})}
  window.addEventListener('resize',positionDoorTextures);positionDoorTextures();
