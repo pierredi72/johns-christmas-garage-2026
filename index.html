@@ -150,6 +150,13 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 #magicScene{z-index:22!important}
 #surpriseView{z-index:30!important}
 
+
+/* V10: einheitlicher Innenraum – goldene Nummer sichtbar, nummernlose Holzklappe */
+.door.opened{position:absolute!important;isolation:isolate!important;overflow:visible!important;background:radial-gradient(ellipse at center,#17100b 0%,#050302 78%)!important;box-shadow:inset 0 0 18px #000,0 0 12px #e8b85b66!important;}
+.door.opened::before{content:attr(data-number)!important;position:absolute!important;z-index:8!important;inset:12% 12%!important;display:grid!important;place-items:center!important;color:#f4dca9!important;font:bold clamp(12px,2vw,25px) Georgia,serif!important;text-shadow:0 0 12px #f6c76b!important;background:radial-gradient(ellipse,#17100b 0%,#050302 78%)!important;border:1px solid #79552e!important;box-shadow:inset 0 0 22px #000,0 0 9px #d5a85a44!important;pointer-events:none!important;}
+.door.opened::after{content:''!important;position:absolute!important;z-index:6!important;inset:0!important;border:1px solid #654022!important;border-radius:2px!important;background:repeating-linear-gradient(0deg,#684027 0 7px,#98613a 8px 11px,#744629 12px 16px,#56331f 17px 20px)!important;box-shadow:inset 0 0 0 2px #bd8951,2px 3px 8px #000c!important;transform-origin:left center!important;backface-visibility:hidden!important;pointer-events:none!important;}
+.door.opening::after{animation:woodFlapOpen 1.9s cubic-bezier(.18,.72,.18,1) both!important;}
+.door.opened:not(.opening)::after{transform:perspective(900px) rotateY(-108deg)!important;}
 </style>
 </head>
 <body>
