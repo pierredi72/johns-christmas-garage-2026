@@ -139,6 +139,17 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
 .door.opening::after,.door.opened::after{transform:perspective(900px) rotateY(-108deg)!important;}
 .stage.immersed{visibility:hidden!important;opacity:0!important;}
 
+
+/* V9 repair: stable, real-calendar wooden flap and clean transition */
+.door.opened{z-index:5!important;background:radial-gradient(ellipse at center,#080503 0%,#020101 82%)!important;box-shadow:inset 0 0 18px #000,0 0 12px #e8b85b66!important;overflow:visible!important;}
+.door.opened::before{content:attr(data-number)!important;position:absolute;z-index:1;inset:12% 12%;display:grid;place-items:center;color:#f4dca9;font:bold clamp(12px,2vw,25px) Georgia,serif;text-shadow:0 0 12px #f6c76b;background:radial-gradient(ellipse,#17100b 0%,#050302 78%);border:1px solid #79552e;box-shadow:inset 0 0 22px #000,0 0 9px #d5a85a44;}
+.door.opened::after{content:''!important;position:absolute;inset:0;border:1px solid #654022;border-radius:2px;background-image:var(--calendar-image)!important;background-size:var(--stage-w) var(--stage-h)!important;background-position:var(--door-bg-x) var(--door-bg-y)!important;background-repeat:no-repeat!important;box-shadow:2px 3px 8px #000c;transform-origin:left center;transform:perspective(900px) rotateY(-108deg)!important;backface-visibility:visible!important;}
+.door.opening::after{animation:woodFlapOpen 1.9s cubic-bezier(.18,.72,.18,1) both!important;}
+@keyframes woodFlapOpen{0%{transform:perspective(900px) rotateY(0deg)}100%{transform:perspective(900px) rotateY(-108deg)}}
+.stage.immersed{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
+#magicScene{z-index:22!important}
+#surpriseView{z-index:30!important}
+
 </style>
 </head>
 <body>
@@ -165,9 +176,9 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
  const img=stage.querySelector('img').src;
  const today=new Date();
  const preview=new URLSearchParams(location.search).get('test')==='1';
- const openedKey='johnny-garage-opened-2026';
+ const openedKey='johnny-garage-opened-2026-v9';
  const params=new URLSearchParams(location.search);
- if(params.get('reset')==='1'){try{localStorage.removeItem(openedKey)}catch(e){};params.delete('reset');const clean=location.pathname+(params.toString()?'?'+params.toString():'');history.replaceState({},'',clean); }
+ if(params.get('reset')==='1'){try{localStorage.removeItem(openedKey)}catch(e){};params.delete('reset');const clean=location.pathname+(params.toString()?'?'+params.toString():'');try{history.replaceState({},'',clean)}catch(e){} }
  const doors=[
  [1,4.2,10.5,13.2,14.5],[2,21.6,20.5,11.3,13.3],[3,34.4,20.5,11.5,13.3],
  [4,47.8,23.0,11.0,13.5],[5,69.2,29.8,7.2,8.5],[6,82.2,12.5,12.0,16.0],
@@ -180,9 +191,9 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
  ];
  const scene=document.getElementById('magicScene'), crate=document.getElementById('crateWrap');
  const surprise=document.getElementById('surpriseView'), title=document.getElementById('surpriseTitle'), text=document.getElementById('surpriseText');
- let soundOn=localStorage.getItem('johnny-garage-sound')!=='off';
+ let soundOn=true;try{soundOn=localStorage.getItem('johnny-garage-sound')!=='off'}catch(e){soundOn=true}
  const soundButton=document.getElementById('soundToggle');
- if(soundButton){soundButton.textContent=soundOn?'♪ Ton an':'♪ Ton aus';soundButton.setAttribute('aria-pressed',String(soundOn));soundButton.addEventListener('click',()=>{soundOn=!soundOn;localStorage.setItem('johnny-garage-sound',soundOn?'on':'off');soundButton.textContent=soundOn?'♪ Ton an':'♪ Ton aus';soundButton.setAttribute('aria-pressed',String(soundOn));});}
+ if(soundButton){soundButton.textContent=soundOn?'♪ Ton an':'♪ Ton aus';soundButton.setAttribute('aria-pressed',String(soundOn));soundButton.addEventListener('click',()=>{soundOn=!soundOn;try{localStorage.setItem('johnny-garage-sound',soundOn?'on':'off')}catch(e){}soundButton.textContent=soundOn?'♪ Ton an':'♪ Ton aus';soundButton.setAttribute('aria-pressed',String(soundOn));});}
  let audioCtx, wonderOsc=[], wonderGain=null;
  function audio(){if(!soundOn)return null;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;audioCtx=audioCtx||new C();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}catch(e){return null}}
  function tone(freq,when,duration,gain,type='sine',endFreq=null){const c=audio();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,when);if(endFreq)o.frequency.exponentialRampToValueAtTime(endFreq,when+duration);g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(gain,when+.12);g.gain.exponentialRampToValueAtTime(.0001,when+duration);o.connect(g);g.connect(c.destination);o.start(when);o.stop(when+duration+.05)}
@@ -192,7 +203,7 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
  function magicChime(){const c=audio();if(!c)return;const n=c.currentTime;[[523.25,0],[659.25,.38],[783.99,.76],[1046.5,1.18],[1318.5,1.62]].forEach(([f,t])=>{tone(f,n+t,2.1,.022,'sine');tone(f*2,n+t+.04,1.6,.006,'sine')})}
  function returnChime(){const c=audio();if(!c)return;const n=c.currentTime;[1046.5,783.99,659.25,523.25].forEach((f,i)=>tone(f,n+i*.24,1.15,.018,'sine'))}
  function haptic(pattern){try{if(navigator.vibrate)navigator.vibrate(pattern)}catch(e){}}
- function getOpened(){try{return JSON.parse(localStorage.getItem(openedKey)||'[]')}catch(e){return []}}
+ function getOpened(){try{const v=JSON.parse(localStorage.getItem(openedKey)||'[]');return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=24):[]}catch(e){return []}}
  function saveOpened(n){const a=getOpened();if(!a.includes(n)){a.push(n);try{localStorage.setItem(openedKey,JSON.stringify(a))}catch(e){}}}
  function refresh(){getOpened().forEach(n=>{const b=stage.querySelector('[data-door="'+n+'"]');if(b){b.classList.add('opened');b.dataset.number=n}})}
  function sparks(){const host=document.getElementById('magicParticles');host.replaceChildren();for(let i=0;i<72;i++){const p=document.createElement('i');p.style.setProperty('--x',(12+Math.random()*76)+'%');p.style.setProperty('--y',(35+Math.random()*55)+'%');p.style.setProperty('--s',(3+Math.random()*6)+'px');p.style.setProperty('--d',(1.6+Math.random()*2.3)+'s');p.style.setProperty('--delay',(Math.random()*.9)+'s');p.style.setProperty('--dx',(-75+Math.random()*150)+'px');host.appendChild(p)}}
@@ -210,8 +221,8 @@ button.close{border:1px solid #b98c53;border-radius:8px;background:#6a4829;color
    creak();startWonder();haptic([20,40,20]);sparks();
    setTimeout(()=>{b.classList.remove('opening');stage.classList.add('portal-zoom');haptic([18,45,18]);},1850);
    setTimeout(()=>{magicChime();stopWonder();},4400);
-   setTimeout(()=>{scene.classList.add('leaving');},5650);
-   setTimeout(()=>{stage.classList.add('immersed');showSurprise(n);surprise.style.display='grid';surprise.classList.remove('hide');void surprise.offsetWidth;surprise.classList.add('show');scene.classList.remove('active','leaving','snow','aurora','fire');scene.style.display='none';scene.setAttribute('aria-hidden','true');busy=false;},6900);
+   setTimeout(()=>{scene.classList.add('leaving');stage.classList.add('immersed');},5650);
+   setTimeout(()=>{showSurprise(n);surprise.style.display='grid';surprise.classList.remove('hide');void surprise.offsetWidth;surprise.classList.add('show');scene.classList.remove('active','leaving','snow','aurora','fire');scene.style.display='none';scene.setAttribute('aria-hidden','true');busy=false;},6900);
  }
  function back(){if(busy)return;busy=true;surprise.classList.remove('show');surprise.classList.add('hide');returnChime();haptic([18,35,18]);setTimeout(()=>{surprise.style.display='none';surprise.classList.remove('hide');stage.classList.remove('immersed','portal-zoom');busy=false;},1700)}
  doors.forEach(([n,x,y,w,h])=>{const b=document.createElement('button');b.type='button';b.className='door';b.dataset.door=n;b.style.left=x+'%';b.style.top=y+'%';b.style.width=w+'%';b.style.height=h+'%';b.setAttribute('aria-label','Adventstürchen '+n);b.dataset.number=n;b.style.setProperty('--calendar-image','url(\"'+img+'\")');b.innerHTML='<span class="sr">Türchen '+n+'</span>';b.addEventListener('click',()=>openDoor(n));stage.appendChild(b)});
